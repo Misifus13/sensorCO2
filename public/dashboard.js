@@ -62,14 +62,14 @@ function actualizarVista() {
     
     secuencia.forEach((paso, index) => {
         const li = document.createElement("li");
-        // Ajuste de diseño para que el texto sea legible
-        li.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:10px; background:white; margin-bottom:5px; border:1px solid #eee; border-radius:4px;";
+        // Alineación estricta y elementos pequeños
+        li.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:5px; background:white; margin-bottom:4px; border-bottom:1px solid #eee; font-size:14px;";
         
         li.innerHTML = `
-            <span style="font-weight:500;">${paso.cmd}: <strong style="color:#4b5563;">${paso.val}</strong></span> 
+            <span>${paso.cmd}: <b>${paso.val}</b></span> 
             <button onclick="eliminarPaso(${index})" 
-                    style="color:#ef4444; border:none; background:#fee2e2; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:bold;">
-                ELIMINAR
+                    style="color:red; background:#ffebeb; border:1px solid #ffcccc; padding:2px 8px; cursor:pointer; font-size:11px;">
+                x
             </button>`;
         lista.appendChild(li);
     });
