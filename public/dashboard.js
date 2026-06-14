@@ -27,19 +27,17 @@ document.addEventListener("DOMContentLoaded", () => {
 // MQTT: INICIO / STOP
 // =======================
 function enviarEstado(estado) {
-
     fetch("/enviar-comando", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mensaje: estado })
     })
     .then(res => {
-        if (res.ok) {
-            document.getElementById("historialEnvios").innerText =
-                "Último comando: " + estado;
-        } else {
+        if (!res.ok) {
             alert("Error al enviar comando");
         }
+        // Eliminamos la línea que actualizaba #historialEnvios aquí
+        // para que no afecte a la lista de la secuencia de movimiento
     })
     .catch(err => {
         console.error(err);
@@ -89,10 +87,10 @@ function actualizarVista() {
 }
 
 function guardarYEnviar() {
-
     if (secuencia.length === 0) return alert("Lista vacía");
 
-    ultimoEnvio = [...secuencia];
+    // Guardamos la referencia para el historial
+    const secuenciaActual = [...secuencia];
 
     fetch("/enviar-comando", {
         method: "POST",
@@ -101,12 +99,15 @@ function guardarYEnviar() {
     })
     .then(res => {
         if (res.ok) {
+            // Actualizamos el historial SOLO con la secuencia de movimientos
+            document.getElementById("historialEnvios").innerHTML = 
+                secuenciaActual.map(p => `${p.cmd}(${p.val})`).join(" → ");
 
-            document.getElementById("historialEnvios").innerHTML =
-                ultimoEnvio.map(p => `${p.cmd}(${p.val})`).join(" → ");
-
+            // Limpiamos la lista visual y el array
             secuencia = [];
             actualizarVista();
+        } else {
+            alert("Error al enviar la secuencia");
         }
     });
 }
