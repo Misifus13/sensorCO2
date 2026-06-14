@@ -128,7 +128,7 @@ app.post("/registro", async (req, res) => {
 
 
 
-        const { data: sensores, error } = await supabase
+
         .from("sensores_co2")
         .select("*");
     
