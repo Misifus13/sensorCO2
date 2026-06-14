@@ -54,30 +54,31 @@
             </div>
         </div>
 
+        
 
         <div class="panel-card">
             <div class="panel-header"><h3>⚙️ Configurar Secuencia</h3></div>
             
-            <div style="display:flex; gap:8px; margin-top:15px; align-items: center;">
-                <select id="selectAccion" style="flex:2; padding:12px; border-radius:6px; border:1px solid #ccc;">
+            <div style="margin-top:15px; display:flex; gap:5px; align-items: center;">
+                <select id="selectAccion" style="width:100px; padding:8px;">
                     <option value="AVANZA">AVANZA</option>
                     <option value="RETROCEDE">RETROCEDE</option>
                     <option value="GIRA">GIRA</option>
                 </select>
                 
-                <input type="number" id="inputValor" placeholder="Cant." 
-                       style="flex:1; padding:12px; border-radius:6px; border:1px solid #ccc; font-size:16px;">
+                <input type="number" id="inputValor" placeholder="Valor" 
+                       style="width:60px; padding:8px; font-size:18px; text-align:center;">
                 
                 <button onclick="agregarAlista()" 
-                        style="padding:10px 16px; background:#10b981; color:white; border:none; border-radius:6px; cursor:pointer; font-size:14px;">
+                        style="width:40px; height:38px; background:#10b981; color:white; border:none; cursor:pointer; font-size:20px;">
                     +
                 </button>
             </div>
         
-            <ul id="listaSecuencia" style="margin:15px 0; background:#f9f9f9; padding:5px; border-radius:5px; list-style:none;"></ul>
+            <ul id="listaSecuencia" style="margin:15px 0; background:#f9f9f9; padding:10px; border-radius:5px; list-style:none;"></ul>
         
-            <button onclick="guardarYEnviar()" style="width:100%; padding:12px; background:#8b5cf6; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600;">
-                <i class="fas fa-save"></i> Enviar Secuencia
+            <button onclick="guardarYEnviar()" style="width:100%; padding:10px; background:#8b5cf6; color:white; border:none; cursor:pointer;">
+                Enviar Secuencia
             </button>
         </div>
 
