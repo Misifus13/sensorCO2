@@ -44,12 +44,25 @@
 
         <div class="panel-card">
             <div class="panel-header"><h3>⚙️ Control MQTT</h3></div>
-            <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
-                <input type="text" id="inputComando" placeholder="Ej: ENCENDER_VENTILADOR" 
-                       style="padding:10px; border:1px solid #ddd; border-radius:6px; font-family:inherit;">
-                <button onclick="enviarComando()" 
-                        style="padding:10px; background:#3b82f6; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600;">
-                    <i class="fas fa-paper-plane"></i> Enviar
+        
+            <div style="border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px;">
+                <p><b>Comando Directo:</b></p>
+                <input type="text" id="inputComando" placeholder="Ej: AVANZA 20" style="width:100%; padding:8px; margin-top:5px;">
+                <button onclick="enviarComando()" style="width:100%; margin-top:5px; background:#3b82f6; color:white; border:none; padding:8px; cursor:pointer;">
+                    <i class="fas fa-paper-plane"></i> Enviar Directo
+                </button>
+            </div>
+        
+            <div>
+                <p><b>Secuencia de Ruta:</b></p>
+                <div style="display:flex; gap:5px; margin-bottom:10px;">
+                    <select id="selectAccion" style="flex:1; padding:5px;"><option>AVANZA</option><option>RETROCEDE</option><option>GIRA</option></select>
+                    <input type="number" id="inputValor" placeholder="Valor" style="width:60px;">
+                    <button onclick="agregarAlista()" style="background:#10b981; color:white; border:none; padding:5px 10px;">+</button>
+                </div>
+                <ul id="listaSecuencia" style="background:#f4f4f4; padding:5px; min-height:40px; border-radius:5px;"></ul>
+                <button onclick="guardarYEnviar()" style="width:100%; margin-top:10px; background:#8b5cf6; color:white; border:none; padding:8px; cursor:pointer;">
+                    <i class="fas fa-save"></i> Guardar y Enviar Ruta
                 </button>
             </div>
         </div>
