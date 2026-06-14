@@ -206,3 +206,46 @@ function logout(){
     window.location =
         "index.html";
 }
+// ========================================
+// MQTT DESDE EL NAVEGADOR (CONFIG CONTROL)
+// ========================================
+
+const mqttWeb = mqtt.connect(
+    "wss://e46fb974d55a4c96a5bd632a3617db64.s1.eu.hivemq.cloud:8884/mqtt",
+    {
+        username: "jhosimar",
+        password: "Leaveamealone1305"
+    }
+);
+
+mqttWeb.on("connect", () => {
+    console.log("✅ MQTT Web conectado");
+});
+
+mqttWeb.on("error", (err) => {
+    console.log("❌ MQTT Web error:", err);
+});
+
+function enviarConfig() {
+
+    const idSensor = localStorage.getItem("id_sensor135");
+
+    const payload = {
+        id: idSensor,
+        fan: 1,
+        mode: "auto",
+        alarm: true
+    };
+
+    mqttWeb.publish(
+        "jhosimar/config",
+        JSON.stringify(payload),
+        (err) => {
+            if (err) {
+                console.log("❌ Error enviando MQTT:", err);
+            } else {
+                console.log("✅ Config enviada a MQTT");
+            }
+        }
+    );
+}
