@@ -81,7 +81,7 @@ function actualizarVista() {
 
         li.innerHTML = `
             <span>${p.cmd}: <b>${p.val}</b></span>
-            <button onclick="eliminarPaso(${i})">x</button>
+            <<button class="btn-delete" onclick="eliminarPaso(${i})">x</button>
         `;
 
         lista.appendChild(li);
