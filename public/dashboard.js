@@ -243,12 +243,23 @@ let secuencia = [];
 
 function agregarAlista() {
     const accion = document.getElementById("selectAccion").value;
-    const valor = document.getElementById("inputValor").value;
-    if (!valor) return alert("Ingresa un valor");
+    const inputValor = document.getElementById("inputValor");
+    const valor = inputValor.value;
 
+    if (!valor || isNaN(valor)) {
+        alert("Por favor, ingresa un número válido con el teclado");
+        return;
+    }
+
+    // Guardar en el array
     secuencia.push({ cmd: accion, val: parseInt(valor) });
+    
+    // Actualizar la lista visual
     actualizarVista();
-    document.getElementById("inputValor").value = "";
+    
+    // Limpiar campo de cantidad y enfocarlo para escribir el siguiente rápido
+    inputValor.value = "";
+    inputValor.focus(); 
 }
 
 function eliminarPaso(index) {
