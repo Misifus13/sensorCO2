@@ -39,7 +39,7 @@ mqttClient.on("connect", () => {
 
     console.log("✅ Conectado a HiveMQ");
 
-    mqttClient.subscribe("co2/datos");
+    mqttClient.subscribe("jhosimar/rtc");
 });
 
 // ========================================
@@ -48,7 +48,7 @@ mqttClient.on("connect", () => {
 
 mqttClient.on("message", async (topic, message) => {
 
-    if (topic !== "co2/datos") return;
+    if (topic !== "jhosimar/rtc") return;
 
     try {
 
