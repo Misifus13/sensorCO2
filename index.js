@@ -1,11 +1,11 @@
-require('dotenv').config();
+require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const mqtt = require("mqtt");
 
-const { createClient } = require('@supabase/supabase-js');
+const { createClient } = require("@supabase/supabase-js");
 
 const app = express();
 
@@ -16,16 +16,14 @@ app.use(express.static(path.join(__dirname, "public")));
 // ========================================
 // SUPABASE
 // ========================================
-
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_KEY
 );
 
 // ========================================
-// MQTT
+// MQTT (HIVEMQ CLOUD)
 // ========================================
-
 const mqttClient = mqtt.connect(
     "mqtts://e46fb974d55a4c96a5bd632a3617db64.s1.eu.hivemq.cloud:8883",
     {
@@ -36,76 +34,85 @@ const mqttClient = mqtt.connect(
 );
 
 mqttClient.on("connect", () => {
-
     console.log("✅ Conectado a HiveMQ");
 
+    // 🔥 SUSCRIPCIONES IMPORTANTES
     mqttClient.subscribe("jhosimar/rtc");
+    mqttClient.subscribe("jhosimar/config");
 });
 
 // ========================================
-// RECEPCION DE DATOS MQTT
+// RECEPCIÓN MQTT
 // ========================================
-
 mqttClient.on("message", async (topic, message) => {
-
-    if (topic !== "jhosimar/rtc") return;
 
     try {
 
-        const data = JSON.parse(message.toString());
-        
-        const id_sensor135 = data.id;
-        const lectura = data.co2;
-        
-        console.log("ID MQTT:", id_sensor135);
-        console.log("CO2 MQTT:", lectura);
+        // ========================================
+        // 1. DATOS DEL SENSOR (ESP32)
+        // ========================================
+        if (topic === "jhosimar/rtc") {
 
-        const { data: sensor } = await supabase
-            .from("sensores_co2")
-            .select("id_sensor135")
-            .eq("id_sensor135", id_sensor135)
-            .maybeSingle();
+            const data = JSON.parse(message.toString());
 
-        if (!sensor) {
+            const id_sensor135 = data.id;
+            const lectura = data.co2;
 
-            console.log(
-                "⚠️ Sensor no registrado:",
-                id_sensor135
-            );
+            console.log("📡 SENSOR:", id_sensor135, "CO2:", lectura);
+
+            // validar sensor
+            const { data: sensor } = await supabase
+                .from("sensores_co2")
+                .select("id_sensor135")
+                .eq("id_sensor135", id_sensor135)
+                .maybeSingle();
+
+            if (!sensor) {
+                console.log("⚠️ Sensor no registrado:", id_sensor135);
+                return;
+            }
+
+            // guardar lectura
+            const { error } = await supabase
+                .from("datos_co2")
+                .insert([
+                    {
+                        id_sensor135,
+                        lectura
+                    }
+                ]);
+
+            if (error) throw error;
+
+            console.log("✅ Lectura guardada");
 
             return;
         }
 
-        const { error } = await supabase
-            .from("datos_co2")
-            .insert([
-                {
-                    id_sensor135,
-                    lectura
-                }
-            ]);
+        // ========================================
+        // 2. CONFIGURACIÓN DESDE WEB
+        // ========================================
+        if (topic === "jhosimar/config") {
 
-        if (error) throw error;
+            const config = JSON.parse(message.toString());
 
-        console.log(
-            "✅ Lectura guardada:",
-            id_sensor135,
-            lectura
-        );
+            console.log("⚙️ CONFIG RECIBIDA DESDE WEB:");
+            console.log(config);
+
+            // Aquí luego puedes enviar al ESP32 si quieres:
+            // mqttClient.publish("jhosimar/esp32", JSON.stringify(config));
+
+            return;
+        }
 
     } catch (err) {
-
-        console.error(
-            "❌ Error MQTT:",
-            err.message
-        );
+        console.error("❌ Error MQTT:", err.message);
     }
 });
 
 // ========================================
-// REGISTRO
+// REGISTRO USUARIO
 // ========================================
-
 app.post("/registro", async (req, res) => {
 
     const {
@@ -116,19 +123,6 @@ app.post("/registro", async (req, res) => {
         id_sensor135
     } = req.body;
 
-
-        console.log("ID recibido:", id_sensor135);
-
-
-
-    
-       const { data: sensores, error } = await supabase
-            .from("sensores_co2")
-            .select("*");
-        
-        console.log("Todos los sensores:", sensores);
-            
-
     try {
 
         const { data: sensor } = await supabase
@@ -138,10 +132,7 @@ app.post("/registro", async (req, res) => {
             .maybeSingle();
 
         if (!sensor) {
-
-            return res.status(404).send(
-                "⚠️ El sensor no existe."
-            );
+            return res.status(404).send("⚠️ El sensor no existe.");
         }
 
         const { data: usuarioExistente } = await supabase
@@ -151,10 +142,7 @@ app.post("/registro", async (req, res) => {
             .maybeSingle();
 
         if (usuarioExistente) {
-
-            return res.status(400).send(
-                "⚠️ Usuario ya registrado."
-            );
+            return res.status(400).send("⚠️ Usuario ya registrado.");
         }
 
         const { error } = await supabase
@@ -171,30 +159,20 @@ app.post("/registro", async (req, res) => {
 
         if (error) throw error;
 
-        res.send(
-            "✅ Usuario registrado correctamente"
-        );
+        res.send("✅ Usuario registrado correctamente");
 
     } catch (err) {
-
         console.error(err);
-
-        res.status(500).send(
-            "Error al registrar."
-        );
+        res.status(500).send("Error al registrar.");
     }
 });
 
 // ========================================
 // LOGIN
 // ========================================
-
 app.post("/login", async (req, res) => {
 
-    const {
-        usuario,
-        contrasena
-    } = req.body;
+    const { usuario, contrasena } = req.body;
 
     try {
 
@@ -208,28 +186,20 @@ app.post("/login", async (req, res) => {
         if (error) throw error;
 
         if (!data) {
-
-            return res.status(401).send(
-                "Credenciales inválidas"
-            );
+            return res.status(401).send("Credenciales inválidas");
         }
 
         res.json(data);
 
     } catch (err) {
-
         console.error(err);
-
-        res.status(500).send(
-            "Error al iniciar sesión"
-        );
+        res.status(500).send("Error al iniciar sesión");
     }
 });
 
 // ========================================
-// CONSULTAR DATOS DEL SENSOR
+// DATOS DEL SENSOR
 // ========================================
-
 app.get("/datos/:id_sensor135", async (req, res) => {
 
     try {
@@ -240,9 +210,7 @@ app.get("/datos/:id_sensor135", async (req, res) => {
             .from("datos_co2")
             .select("*")
             .eq("id_sensor135", id_sensor135)
-            .order("fecha_hora", {
-                ascending: false
-            })
+            .order("fecha_hora", { ascending: false })
             .limit(100);
 
         if (error) throw error;
@@ -250,34 +218,23 @@ app.get("/datos/:id_sensor135", async (req, res) => {
         res.json(data);
 
     } catch (err) {
-
         console.error(err);
-
-        res.status(500).send(
-            "Error obteniendo datos."
-        );
+        res.status(500).send("Error obteniendo datos.");
     }
 });
 
 // ========================================
 // PING
 // ========================================
-
 app.get("/ping", (req, res) => {
-
     res.send("pong");
 });
 
 // ========================================
 // SERVIDOR
 // ========================================
-
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-
-    console.log(
-        "🚀 Servidor CO2 iniciado en puerto",
-        PORT
-    );
+    console.log("🚀 Servidor CO2 iniciado en puerto", PORT);
 });
