@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoMonitor CO₂</title>
+    <title>Panel de Control - EcoMonitor CO₂</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="dashboard-body">
@@ -21,7 +22,6 @@
 </nav>
 
 <div class="dashboard-container">
-
     <div class="main-grid">
 
         <!-- CO2 -->
@@ -31,7 +31,7 @@
             <h1 id="currentCO2">-- ppm</h1>
 
             <div style="text-align:center; margin-top:10px;">
-                <span id="estadoAire" style="font-size:1.3rem; font-weight:bold;">---</span>
+                <span id="estadoAire" style="font-size:1.4rem; font-weight:bold;">---</span>
             </div>
         </div>
 
@@ -39,41 +39,89 @@
         <div class="panel-card">
             <div class="panel-header"><h3>📊 Información</h3></div>
 
-            <p>Sensor: <b id="sensorID">---</b></p>
-            <p>Última lectura: <b id="ultimaLectura">---</b></p>
+            <div class="setting-item">
+                Sensor: <b id="sensorID">---</b>
+            </div>
+
+            <div class="setting-item">
+                Última actualización: <b id="ultimaLectura">---</b>
+            </div>
         </div>
 
-        <!-- CONTROL NUEVO -->
+        <!-- CONTROL MQTT (MODIFICADO) -->
         <div class="panel-card">
-            <div class="panel-header"><h3>⚙️ Control del Sistema</h3></div>
+            <div class="panel-header"><h3>⚙️ Control MQTT</h3></div>
 
-            <div class="control-buttons">
-                <button class="btn-inicio" onclick="enviarEstado('INICIO')">
+            <div style="display:flex; gap:10px; margin-top:10px;">
+
+                <button onclick="enviarEstado('INICIO')" 
+                        style="flex:1; padding:10px; background:#16a34a; color:white; border:none; border-radius:6px; cursor:pointer;">
                     <i class="fas fa-play"></i> INICIO
                 </button>
 
-                <button class="btn-paro" onclick="enviarEstado('STOP')">
+                <button onclick="enviarEstado('STOP')" 
+                        style="flex:1; padding:10px; background:#dc2626; color:white; border:none; border-radius:6px; cursor:pointer;">
                     <i class="fas fa-stop"></i> PARO
                 </button>
+
             </div>
+        </div>
+
+        <!-- SECUENCIA (TU PARTE ORIGINAL MANTENIDA) -->
+        <div class="panel-card">
+            <div class="panel-header"><h3>⚙️ Configurar Secuencia</h3></div>
+
+            <div style="display:flex; gap:10px; align-items:center; margin-top:10px;">
+
+                <select id="selectAccion" style="flex:2; padding:10px;">
+                    <option value="AVANZA">AVANZA</option>
+                    <option value="RETROCEDE">RETROCEDE</option>
+                    <option value="GIRA">GIRA</option>
+                </select>
+
+                <input type="number" id="inputValor" placeholder="Valor"
+                       style="flex:1; padding:10px;">
+
+                <button onclick="agregarAlista()"
+                        style="padding:10px; background:#10b981; color:white; border:none; cursor:pointer;">
+                    +
+                </button>
+
+            </div>
+
+            <ul id="listaSecuencia"
+                style="margin-top:10px; background:#f9f9f9; padding:10px; border-radius:5px; list-style:none;">
+            </ul>
+
+            <button onclick="guardarYEnviar()"
+                    style="width:100%; padding:10px; background:#8b5cf6; color:white; border:none; cursor:pointer;">
+                Enviar Secuencia
+            </button>
         </div>
 
         <!-- HISTORIAL -->
         <div class="panel-card">
-            <div class="panel-header"><h3>📜 Último comando</h3></div>
-            <div id="historialEnvios">Sin comandos aún</div>
+            <div class="panel-header"><h3>📜 Último envío</h3></div>
+
+            <div id="historialEnvios"
+                 style="margin-top:10px; background:#f0f0f0; padding:10px; border-radius:5px;">
+                Sin envíos aún
+            </div>
         </div>
 
     </div>
 
     <!-- GRAFICA -->
     <div class="chart-container">
-        <div style="margin-bottom:10px;">Historial CO₂ (50 últimas lecturas)</div>
-        <canvas id="grafica"></canvas>
+        <div style="margin-bottom:15px;">Historial CO₂ (Últimas 50 lecturas)</div>
+        <div style="height:350px;">
+            <canvas id="grafica"></canvas>
+        </div>
     </div>
 
 </div>
 
 <script src="dashboard.js"></script>
+
 </body>
 </html>
