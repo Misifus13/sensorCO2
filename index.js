@@ -126,11 +126,6 @@ app.post("/registro", async (req, res) => {
         console.log("Resultado:", sensor);
         console.log("Error:", error);
 
-
-
-
-        .from("sensores_co2")
-        .select("*");
     
         console.log("Todos los sensores:", sensores);
     
