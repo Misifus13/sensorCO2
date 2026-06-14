@@ -118,13 +118,7 @@ app.post("/registro", async (req, res) => {
 
         console.log("ID recibido:", id_sensor135);
 
-        const { data: sensor, error } = await supabase
-            .from("sensores_co2")
-            .select("*")
-            .eq("id_sensor135", id_sensor135);
-        
-        console.log("Resultado:", sensor);
-        console.log("Error:", error);
+
 
     
        const { data: sensores, error } = await supabase
