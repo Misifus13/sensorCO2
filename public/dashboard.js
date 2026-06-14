@@ -56,19 +56,22 @@ function eliminarPaso(index) {
     actualizarVista();
 }
 
+// Variable para guardar el historial
+let ultimoEnvio = [];
+
 function actualizarVista() {
     const lista = document.getElementById("listaSecuencia");
     lista.innerHTML = "";
     
-    secuencia.forEach((paso, index) => {
+    secuencia.forEach((p, i) => {
         const li = document.createElement("li");
-        // Alineación estricta y elementos pequeños
-        li.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:5px; background:white; margin-bottom:4px; border-bottom:1px solid #eee; font-size:14px;";
+        // CSS: Diseño compacto
+        li.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:4px 8px; border-bottom:1px solid #eee; font-size:14px;";
         
         li.innerHTML = `
-            <span>${paso.cmd}: <b>${paso.val}</b></span> 
-            <button onclick="eliminarPaso(${index})" 
-                    style="color:red; background:#ffebeb; border:1px solid #ffcccc; padding:2px 8px; cursor:pointer; font-size:11px;">
+            <span>${p.cmd}: <b>${p.val}</b></span> 
+            <button onclick="eliminarPaso(${i})" 
+                    style="color:red; background:none; border:1px solid red; padding:0px 5px; cursor:pointer; font-size:10px; border-radius:3px;">
                 x
             </button>`;
         lista.appendChild(li);
@@ -76,22 +79,27 @@ function actualizarVista() {
 }
 
 async function guardarYEnviar() {
-    if (secuencia.length === 0) return alert("La secuencia está vacía");
+    if (secuencia.length === 0) return alert("Lista vacía");
 
-    try {
-        const response = await fetch("/enviar-comando", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ mensaje: JSON.stringify({ ruta: secuencia }) })
-        });
+    // Guardamos una copia en la variable de historial
+    ultimoEnvio = [...secuencia];
+    
+    const response = await fetch("/enviar-comando", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mensaje: JSON.stringify({ ruta: secuencia }) })
+    });
 
-        if (response.ok) {
-            alert("✅ Secuencia enviada");
-            secuencia = [];
-            actualizarVista();
-        }
-    } catch (error) {
-        alert("Error al enviar secuencia");
+    if (response.ok) {
+        alert("✅ Secuencia enviada");
+        
+        // Mostrar en el nuevo panel de historial
+        const divHistorial = document.getElementById("historialEnvios");
+        divHistorial.innerHTML = ultimoEnvio.map(p => `${p.cmd}(${p.val})`).join(" → ");
+        
+        // Limpiar secuencia actual
+        secuencia = [];
+        actualizarVista();
     }
 }
 
