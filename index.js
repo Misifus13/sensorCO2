@@ -53,11 +53,12 @@ mqttClient.on("message", async (topic, message) => {
     try {
 
         const data = JSON.parse(message.toString());
-
-        const {
-            id_sensor135,
-            lectura
-        } = data;
+        
+        const id_sensor135 = data.id;
+        const lectura = data.co2;
+        
+        console.log("ID MQTT:", id_sensor135);
+        console.log("CO2 MQTT:", lectura);
 
         const { data: sensor } = await supabase
             .from("sensores_co2")
