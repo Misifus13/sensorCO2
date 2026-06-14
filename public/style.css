@@ -284,3 +284,40 @@ button {
     background-color: #dc2626;
     transform: translateY(-2px);
 }
+
+
+.control-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.btn-inicio, .btn-paro {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+    color: white;
+}
+
+.btn-inicio {
+    background: #16a34a;
+}
+
+.btn-paro {
+    background: #dc2626;
+}
+
+.btn-inicio:hover {
+    background: #12833b;
+    transform: scale(1.03);
+}
+
+.btn-paro:hover {
+    background: #b91c1c;
+    transform: scale(1.03);
+}
