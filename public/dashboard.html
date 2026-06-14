@@ -55,11 +55,31 @@
         
             <div>
                 <p><b>Secuencia de Ruta:</b></p>
-                <div style="display:flex; gap:5px; margin-bottom:10px;">
-                    <select id="selectAccion" style="flex:1; padding:5px;"><option>AVANZA</option><option>RETROCEDE</option><option>GIRA</option></select>
-                    <input type="number" id="inputValor" placeholder="Valor" style="width:60px;">
-                    <button onclick="agregarAlista()" style="background:#10b981; color:white; border:none; padding:5px 10px;">+</button>
-                </div>
+<div style="margin-top:20px; border-top: 1px solid #ddd; padding-top: 15px;">
+    <p style="margin-bottom: 10px; font-weight: 600;">⚙️ Configurar Secuencia</p>
+    
+    <div style="display:flex; gap:8px; align-items: center;">
+        <select id="selectAccion" style="flex: 2; padding: 10px; border-radius: 6px; border: 1px solid #ddd;">
+            <option value="AVANZA">AVANZA</option>
+            <option value="RETROCEDE">RETROCEDE</option>
+            <option value="GIRA">GIRA</option>
+        </select>
+
+        <input type="number" id="inputValor" placeholder="Cant." 
+               style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #ddd; text-align: center;">
+
+        <button onclick="agregarAlista()" 
+                style="padding: 10px 15px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer;">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+
+    <ul id="listaSecuencia" style="list-style: none; padding: 0; margin: 15px 0; background: #f9f9f9; border-radius: 6px; border: 1px solid #eee;"></ul>
+
+    <button onclick="guardarYEnviar()" style="width: 100%; padding: 12px; background: #8b5cf6; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+        <i class="fas fa-save"></i> Guardar y Enviar Ruta
+    </button>
+</div>
                 <ul id="listaSecuencia" style="background:#f4f4f4; padding:5px; min-height:40px; border-radius:5px;"></ul>
                 <button onclick="guardarYEnviar()" style="width:100%; margin-top:10px; background:#8b5cf6; color:white; border:none; padding:8px; cursor:pointer;">
                     <i class="fas fa-save"></i> Guardar y Enviar Ruta
