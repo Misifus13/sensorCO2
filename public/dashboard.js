@@ -6,246 +6,232 @@ const SUPABASE_KEY =
 
 const _supabase =
 supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
+    SUPABASE_URL,
+    SUPABASE_KEY
 );
 
 let chart;
 
 document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+    "DOMContentLoaded",
+    () => {
 
-        cargarDatos();
+        cargarDatos();
 
-        setInterval(
-            cargarDatos,
-            5000
-        );
-    }
+        setInterval(
+            cargarDatos,
+            5000
+        );
+    }
 );
 
 async function cargarDatos() {
 
-    try {
+    try {
 
-        const idSensor =
-            localStorage.getItem(
-                "id_sensor135"
-            );
+        const idSensor =
+            localStorage.getItem(
+                "id_sensor135"
+            );
 
-        const { data, error } =
-            await _supabase
-                .from("datos_co2")
-                .select("*")
-                .eq(
-                    "id_sensor135",
-                    idSensor
-                )
-                .order(
-                    "fecha_hora",
-                    {
-                        ascending:false
-                    }
-                )
-                .limit(50);
+        const { data, error } =
+            await _supabase
+                .from("datos_co2")
+                .select("*")
+                .eq(
+                    "id_sensor135",
+                    idSensor
+                )
+                .order(
+                    "fecha_hora",
+                    {
+                        ascending:false
+                    }
+                )
+                .limit(50);
 
-        if (error) throw error;
+        if (error) throw error;
 
-        if (!data.length) return;
+        if (!data.length) return;
 
-        const datos =
-            [...data].reverse();
+        const datos =
+            [...data].reverse();
 
-        const ultimo =
-            datos[
-                datos.length - 1
-            ];
+        const ultimo =
+            datos[
+                datos.length - 1
+            ];
 
-        document.getElementById(
-            "currentCO2"
-        ).innerText =
-            ultimo.lectura.toFixed(0)
-            + " ppm";
+        document.getElementById(
+            "currentCO2"
+        ).innerText =
+            ultimo.lectura.toFixed(0)
+            + " ppm";
 
-        document.getElementById(
-            "sensorID"
-        ).innerText =
-            ultimo.id_sensor135;
+        document.getElementById(
+            "sensorID"
+        ).innerText =
+            ultimo.id_sensor135;
 
-        document.getElementById(
-            "ultimaLectura"
-        ).innerText =
-            new Date(
-                ultimo.fecha_hora
-            ).toLocaleString();
+        document.getElementById(
+            "ultimaLectura"
+        ).innerText =
+            new Date(
+                ultimo.fecha_hora
+            ).toLocaleString();
 
-        actualizarEstado(
-            ultimo.lectura
-        );
+        actualizarEstado(
+            ultimo.lectura
+        );
 
-        dibujarGrafica(
-            datos
-        );
+        dibujarGrafica(
+            datos
+        );
 
-    }
-    catch(err){
+    }
+    catch(err){
 
-        console.error(err);
-    }
+        console.error(err);
+    }
 }
 
 function actualizarEstado(ppm){
 
-    const estado =
-        document.getElementById(
-            "estadoAire"
-        );
+    const estado =
+        document.getElementById(
+            "estadoAire"
+        );
 
-    if(ppm < 800){
+    if(ppm < 800){
 
-        estado.innerText =
-            "🟢 Aire Bueno";
+        estado.innerText =
+            "🟢 Aire Bueno";
 
-        estado.style.color =
-            "#16a34a";
-    }
+        estado.style.color =
+            "#16a34a";
+    }
 
-    else if(ppm < 1200){
+    else if(ppm < 1200){
 
-        estado.innerText =
-            "🟡 Aire Moderado";
+        estado.innerText =
+            "🟡 Aire Moderado";
 
-        estado.style.color =
-            "#ca8a04";
-    }
+        estado.style.color =
+            "#ca8a04";
+    }
 
-    else{
+    else{
 
-        estado.innerText =
-            "🔴 Aire Deficiente";
+        estado.innerText =
+            "🔴 Aire Deficiente";
 
-        estado.style.color =
-            "#dc2626";
-    }
+        estado.style.color =
+            "#dc2626";
+    }
 }
 
 function dibujarGrafica(datos){
 
-    const labels =
-        datos.map(d =>
-            new Date(
-                d.fecha_hora
-            ).toLocaleTimeString()
-        );
+    const labels =
+        datos.map(d =>
+            new Date(
+                d.fecha_hora
+            ).toLocaleTimeString()
+        );
 
-    const ppm =
-        datos.map(
-            d => d.lectura
-        );
+    const ppm =
+        datos.map(
+            d => d.lectura
+        );
 
-    const ctx =
-        document
-        .getElementById(
-            "grafica"
-        )
-        .getContext("2d");
+    const ctx =
+        document
+        .getElementById(
+            "grafica"
+        )
+        .getContext("2d");
 
-    if(chart){
+    if(chart){
 
-        chart.data.labels =
-            labels;
+        chart.data.labels =
+            labels;
 
-        chart.data.datasets[0].data =
-            ppm;
+        chart.data.datasets[0].data =
+            ppm;
 
-        chart.update();
+        chart.update();
 
-        return;
-    }
+        return;
+    }
 
-    chart = new Chart(ctx, {
+    chart = new Chart(ctx, {
 
-        type:"line",
+        type:"line",
 
-        data:{
+        data:{
 
-            labels,
+            labels,
 
-            datasets:[{
+            datasets:[{
 
-                label:
-                "CO₂ (ppm)",
+                label:
+                "CO₂ (ppm)",
 
-                data:ppm,
+                data:ppm,
 
-                borderColor:
-                "#16a34a",
+                borderColor:
+                "#16a34a",
 
-                fill:false,
+                fill:false,
 
-                tension:0.3
-            }]
-        },
+                tension:0.3
+            }]
+        },
 
-        options:{
+        options:{
 
-            responsive:true,
+            responsive:true,
 
-            maintainAspectRatio:false,
+            maintainAspectRatio:false,
 
-            animation:false
-        }
-    });
+            animation:false
+        }
+    });
 }
 
 function logout(){
 
-    localStorage.clear();
+    localStorage.clear();
 
-    window.location =
-        "index.html";
+    window.location =
+        "index.html";
 }
-// ========================================
-// MQTT DESDE EL NAVEGADOR (CONFIG CONTROL)
-// ========================================
 
-const mqttWeb = mqtt.connect(
-    "wss://e46fb974d55a4c96a5bd632a3617db64.s1.eu.hivemq.cloud:8884/mqtt",
-    {
-        username: "jhosimar",
-        password: "Leaveamealone1305"
+async function enviarComando() {
+    const input = document.getElementById("inputComando");
+    const mensaje = input.value;
+
+    if (!mensaje) {
+        alert("Escribe un mensaje primero");
+        return;
     }
-);
 
-mqttWeb.on("connect", () => {
-    console.log("✅ MQTT Web conectado");
-});
+    try {
+        // Ajusta la URL si no estás en localhost:3000
+        const response = await fetch("/enviar-comando", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ mensaje })
+        });
 
-mqttWeb.on("error", (err) => {
-    console.log("❌ MQTT Web error:", err);
-});
-
-function enviarConfig() {
-
-    const idSensor = localStorage.getItem("id_sensor135");
-
-    const payload = {
-        id: idSensor,
-        fan: 1,
-        mode: "auto",
-        alarm: true
-    };
-
-    mqttWeb.publish(
-        "jhosimar/config",
-        JSON.stringify(payload),
-        (err) => {
-            if (err) {
-                console.log("❌ Error enviando MQTT:", err);
-            } else {
-                console.log("✅ Config enviada a MQTT");
-            }
+        if (response.ok) {
+            alert("✅ Mensaje enviado exitosamente");
+            input.value = "";
+        } else {
+            alert("❌ Error al enviar el mensaje");
         }
-    );
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Error de conexión con el servidor");
+    }
 }
