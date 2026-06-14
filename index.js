@@ -128,11 +128,11 @@ app.post("/registro", async (req, res) => {
 
 
 
-    const { data: sensores, error } = await supabase
-    .from("sensores_co2")
-    .select("*");
-
-    console.log("Todos los sensores:", sensores);
+        const { data: sensores, error } = await supabase
+        .from("sensores_co2")
+        .select("*");
+    
+        console.log("Todos los sensores:", sensores);
     
 
     try {
