@@ -1,88 +1,102 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Control - Incubadora Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- 1. LIBRERÍA DE SUPABASE (Indispensable para la conexión) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - Incubadora Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 1. LIBRERÍA DE SUPABASE (Indispensable para la conexión) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="dashboard-body">
 
 <nav class="navbar">
-    <span class="logo">
-        🌱 EcoMonitor CO₂
-    </span>
+    <span class="logo">
+        🌱 EcoMonitor CO₂
+    </span>
 
-    <button class="btn-logout" onclick="logout()">
-        Salir
-    </button>
+    <button class="btn-logout" onclick="logout()">
+        Salir
+    </button>
 </nav>
 
 <div class="dashboard-container">
 
-    <div class="main-grid">
+    <div class="main-grid">
 
-        <div class="panel-card">
+        <div class="panel-card">
 
+            
+            
             <div class="panel-header">
-                <h3>🌿 Calidad del Aire</h3>
+                <h3>⚙️ Configuración Sensor</h3>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <input type="text" id="inputComando" placeholder="Escribe tu comando..." 
+                       style="padding:8px; border:1px solid #ccc; border-radius:5px;">
+                <button onclick="enviarComando()" 
+                        style="padding:10px; background-color:#3b82f6; color:white; border:none; border-radius:5px; cursor:pointer;">
+                    Enviar a jhosimar/config
+                </button>
             </div>
 
-            <div class="reading-item">
-                <div>
-                    <p>Concentración CO₂</p>
-                    <h1 id="currentCO2">-- ppm</h1>
-                </div>
-            </div>
+            
 
-            <div style="text-align:center;margin-top:20px;">
-                <span id="estadoAire"
-                      style="font-size:1.4rem;font-weight:bold;">
-                    ---
-                </span>
-            </div>
+            <div class="panel-header">
+                <h3>🌿 Calidad del Aire</h3>
+            </div>
 
-        </div>
+            <div class="reading-item">
+                <div>
+                    <p>Concentración CO₂</p>
+                    <h1 id="currentCO2">-- ppm</h1>
+                </div>
+            </div>
 
-        <div class="panel-card">
+            <div style="text-align:center;margin-top:20px;">
+                <span id="estadoAire"
+                      style="font-size:1.4rem;font-weight:bold;">
+                    ---
+                </span>
+            </div>
 
-            <div class="panel-header">
-                <h3>📊 Información</h3>
-            </div>
+        </div>
 
-            <div class="setting-item">
-                <span>Sensor:</span>
-                <b id="sensorID">---</b>
-            </div>
+        <div class="panel-card">
 
-            <div class="setting-item">
-                <span>Última actualización:</span>
-                <b id="ultimaLectura">---</b>
-            </div>
+            <div class="panel-header">
+                <h3>📊 Información</h3>
+            </div>
 
-        </div>
+            <div class="setting-item">
+                <span>Sensor:</span>
+                <b id="sensorID">---</b>
+            </div>
 
-    </div>
+            <div class="setting-item">
+                <span>Última actualización:</span>
+                <b id="ultimaLectura">---</b>
+            </div>
 
-    <div class="chart-container">
+        </div>
 
-        <div style="margin-bottom:15px;font-weight:600;">
-            Historial CO₂ (Últimas 50 lecturas)
-        </div>
+    </div>
 
-        <div style="height:350px;">
-            <canvas id="grafica"></canvas>
-        </div>
+    <div class="chart-container">
 
-    </div>
-<button onclick="enviarConfig()">
-    Enviar Configuración MQTT
-</button>
+        <div style="margin-bottom:15px;font-weight:600;">
+            Historial CO₂ (Últimas 50 lecturas)
+        </div>
+
+        <div style="height:350px;">
+            <canvas id="grafica"></canvas>
+        </div>
+
+    </div>
+
 </div>
 
 <script src="dashboard.js"></script>
