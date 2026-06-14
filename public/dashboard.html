@@ -1,66 +1,88 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Control - EcoMonitor</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        /* Estilos rápidos para que se vea bien inmediatamente */
-        body { font-family: 'Poppins', sans-serif; background: #f4f7f6; margin: 0; padding: 20px; }
-        .dashboard-container { max-width: 1000px; margin: auto; }
-        .main-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 20px; }
-        .panel-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .panel-header { margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
-        .panel-header h3 { margin: 0; color: #333; font-size: 1.1rem; }
-        .input-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-        input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
-        button.btn-action { padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: background 0.3s; }
-        button.btn-action:hover { background: #2563eb; }
-        .reading-item h1 { font-size: 2.5rem; margin: 10px 0; color: #1e293b; }
-        .btn-logout { background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - Incubadora Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 1. LIBRERÍA DE SUPABASE (Indispensable para la conexión) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="dashboard-body">
 
-<nav style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <span style="font-weight: 600; font-size: 1.5rem;">🌱 EcoMonitor CO₂</span>
-    <button class="btn-logout" onclick="logout()">Salir</button>
+<nav class="navbar">
+    <span class="logo">
+        🌱 EcoMonitor CO₂
+    </span>
+
+    <button class="btn-logout" onclick="logout()">
+        Salir
+    </button>
 </nav>
 
 <div class="dashboard-container">
-    <div class="main-grid">
-        <div class="panel-card">
-            <div class="panel-header"><h3>🌿 Calidad del Aire</h3></div>
-            <div class="reading-item">
-                <p>Concentración CO₂</p>
-                <h1 id="currentCO2">-- ppm</h1>
-                <span id="estadoAire" style="font-weight:bold;">---</span>
-            </div>
-        </div>
 
-        <div class="panel-card">
-            <div class="panel-header"><h3>⚙️ Panel de Control</h3></div>
-            <div class="input-group">
-                <input type="text" id="inputComando" placeholder="Ej: ENCENDER_VENTILADOR">
-                <button class="btn-action" onclick="enviarComando()">
-                    <i class="fas fa-paper-plane"></i> Enviar al Sensor
-                </button>
-            </div>
-        </div>
-    </div>
+    <div class="main-grid">
 
-    <div class="panel-card">
-        <div class="panel-header"><h3>📊 Historial (Últimas 50 lecturas)</h3></div>
-        <div style="height:300px;">
-            <canvas id="grafica"></canvas>
-        </div>
-    </div>
+        <div class="panel-card">
+
+            <div class="panel-header">
+                <h3>🌿 Calidad del Aire</h3>
+            </div>
+
+            <div class="reading-item">
+                <div>
+                    <p>Concentración CO₂</p>
+                    <h1 id="currentCO2">-- ppm</h1>
+                </div>
+            </div>
+
+            <div style="text-align:center;margin-top:20px;">
+                <span id="estadoAire"
+                      style="font-size:1.4rem;font-weight:bold;">
+                    ---
+                </span>
+            </div>
+
+        </div>
+
+        <div class="panel-card">
+
+            <div class="panel-header">
+                <h3>📊 Información</h3>
+            </div>
+
+            <div class="setting-item">
+                <span>Sensor:</span>
+                <b id="sensorID">---</b>
+            </div>
+
+            <div class="setting-item">
+                <span>Última actualización:</span>
+                <b id="ultimaLectura">---</b>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="chart-container">
+
+        <div style="margin-bottom:15px;font-weight:600;">
+            Historial CO₂ (Últimas 50 lecturas)
+        </div>
+
+        <div style="height:350px;">
+            <canvas id="grafica"></canvas>
+        </div>
+
+    </div>
+
 </div>
 
 <script src="dashboard.js"></script>
+
 </body>
-</html>
