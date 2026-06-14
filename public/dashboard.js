@@ -235,3 +235,57 @@ async function enviarComando() {
         alert("Error de conexión con el servidor");
     }
 }
+
+
+
+// --- LÓGICA DE SECUENCIA ---
+let secuencia = [];
+
+function agregarAlista() {
+    const accion = document.getElementById("selectAccion").value;
+    const valor = document.getElementById("inputValor").value;
+    if (!valor) return alert("Ingresa un valor");
+
+    secuencia.push({ cmd: accion, val: parseInt(valor) });
+    actualizarVista();
+    document.getElementById("inputValor").value = "";
+}
+
+function eliminarPaso(index) {
+    secuencia.splice(index, 1);
+    actualizarVista();
+}
+
+function actualizarVista() {
+    const lista = document.getElementById("listaSecuencia");
+    lista.innerHTML = "";
+    secuencia.forEach((paso, index) => {
+        const li = document.createElement("li");
+        li.style.display = "flex"; li.style.justifyContent = "space-between";
+        li.innerHTML = `<span>${paso.cmd} ${paso.val}</span> <button onclick="eliminarPaso(${index})" style="color:red; border:none; background:none; cursor:pointer;">x</button>`;
+        lista.appendChild(li);
+    });
+}
+
+async function guardarYEnviar() {
+    if (secuencia.length === 0) return alert("La secuencia está vacía");
+
+    // Enviamos el JSON formateado como string al endpoint de comando
+    const payload = JSON.stringify({ ruta: secuencia });
+    
+    try {
+        const response = await fetch("/enviar-comando", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ mensaje: payload })
+        });
+
+        if (response.ok) {
+            alert("✅ Ruta enviada al robot");
+            secuencia = [];
+            actualizarVista();
+        }
+    } catch (error) {
+        alert("Error de conexión");
+    }
+}
