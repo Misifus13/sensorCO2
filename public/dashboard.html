@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Control - EcoMonitor CO₂</title>
+    <title>EcoMonitor CO₂</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="dashboard-body">
 
 <nav class="navbar">
@@ -18,100 +21,57 @@
 </nav>
 
 <div class="dashboard-container">
+
     <div class="main-grid">
+
+        <!-- CO2 -->
         <div class="panel-card">
             <div class="panel-header"><h3>🌿 Calidad del Aire</h3></div>
-            <div class="reading-item">
-                <div>
-                    <p>Concentración CO₂</p>
-                    <h1 id="currentCO2">-- ppm</h1>
-                </div>
-            </div>
-            <div style="text-align:center; margin-top:20px;">
-                <span id="estadoAire" style="font-size:1.4rem; font-weight:bold;">---</span>
+
+            <h1 id="currentCO2">-- ppm</h1>
+
+            <div style="text-align:center; margin-top:10px;">
+                <span id="estadoAire" style="font-size:1.3rem; font-weight:bold;">---</span>
             </div>
         </div>
 
+        <!-- INFO -->
         <div class="panel-card">
             <div class="panel-header"><h3>📊 Información</h3></div>
-            <div class="setting-item">
-                <span>Sensor:</span> <b id="sensorID">---</b>
-            </div>
-            <div class="setting-item">
-                <span>Última actualización:</span> <b id="ultimaLectura">---</b>
-            </div>
+
+            <p>Sensor: <b id="sensorID">---</b></p>
+            <p>Última lectura: <b id="ultimaLectura">---</b></p>
         </div>
 
+        <!-- CONTROL NUEVO -->
         <div class="panel-card">
-            <div class="panel-header"><h3>⚙️ Control MQTT</h3></div>
-            <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
-                <input type="text" id="inputComando" placeholder="Ej: ENCENDER_VENTILADOR" 
-                       style="padding:10px; border:1px solid #ddd; border-radius:6px; font-family:inherit;">
-                <button onclick="enviarComando()" 
-                        style="padding:10px; background:#3b82f6; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600;">
-                    <i class="fas fa-paper-plane"></i> Enviar
+            <div class="panel-header"><h3>⚙️ Control del Sistema</h3></div>
+
+            <div class="control-buttons">
+                <button class="btn-inicio" onclick="enviarEstado('INICIO')">
+                    <i class="fas fa-play"></i> INICIO
+                </button>
+
+                <button class="btn-paro" onclick="enviarEstado('STOP')">
+                    <i class="fas fa-stop"></i> PARO
                 </button>
             </div>
         </div>
 
-        
-
+        <!-- HISTORIAL -->
         <div class="panel-card">
-            <div class="panel-header"><h3>⚙️ Configurar Secuencia</h3></div>
-            
-<div style="display:flex; gap:10px; align-items: center; margin-top:10px;">
-    <select id="selectAccion" style="flex:2; padding:10px;">
-        <option value="AVANZA">AVANZA</option>
-        <option value="RETROCEDE">RETROCEDE</option>
-        <option value="GIRA">GIRA</option>
-    </select>
-    
-    <input type="number" id="inputValor" placeholder="Valor" 
-           style="flex:1; padding:10px; font-size:16px;">
-    
-    <button onclick="agregarAlista()" 
-            style="width:40px; padding:10px; background:#10b981; color:white; border:none; cursor:pointer; font-weight:bold;">
-        +
-    </button>
-</div>
-            </div>
-        
-            <ul id="listaSecuencia" style="margin:15px 0; background:#f9f9f9; padding:10px; border-radius:5px; list-style:none;"></ul>
-        
-            <button onclick="guardarYEnviar()" style="width:100%; padding:10px; background:#8b5cf6; color:white; border:none; cursor:pointer;">
-                Enviar Secuencia
-            </button>
+            <div class="panel-header"><h3>📜 Último comando</h3></div>
+            <div id="historialEnvios">Sin comandos aún</div>
         </div>
 
-
-
-
-        <div class="panel-card">
-            <div class="panel-header"><h3>📜 Última Secuencia Enviada</h3></div>
-            <div id="historialEnvios" style="margin-top:10px; font-size:13px; color:#555; background:#f0f0f0; padding:10px; border-radius:5px; min-height:50px;">
-                No se ha enviado ninguna secuencia aún.
-            </div>
-        </div>
-
-
-
-
-
-        
-
-
-
-        
-
-        
     </div>
 
+    <!-- GRAFICA -->
     <div class="chart-container">
-        <div style="margin-bottom:15px; font-weight:600;">Historial CO₂ (Últimas 50 lecturas)</div>
-        <div style="height:350px;">
-            <canvas id="grafica"></canvas>
-        </div>
+        <div style="margin-bottom:10px;">Historial CO₂ (50 últimas lecturas)</div>
+        <canvas id="grafica"></canvas>
     </div>
+
 </div>
 
 <script src="dashboard.js"></script>
