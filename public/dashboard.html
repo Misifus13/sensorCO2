@@ -58,19 +58,25 @@
         <div class="panel-card">
             <div class="panel-header"><h3>⚙️ Configurar Secuencia</h3></div>
             
-            <div style="display:flex; gap:5px; margin-top:10px;">
-                <select id="selectAccion" style="flex:2; padding:8px;">
+            <div style="display:flex; gap:8px; margin-top:15px; align-items: center;">
+                <select id="selectAccion" style="flex:2; padding:12px; border-radius:6px; border:1px solid #ccc;">
                     <option value="AVANZA">AVANZA</option>
                     <option value="RETROCEDE">RETROCEDE</option>
                     <option value="GIRA">GIRA</option>
                 </select>
-                <input type="number" id="inputValor" placeholder="Valor" style="flex:1; padding:8px;">
-                <button onclick="agregarAlista()" style="background:#10b981; color:white; border:none; padding:8px; cursor:pointer;">+</button>
+                
+                <input type="number" id="inputValor" placeholder="Cant." 
+                       style="flex:1; padding:12px; border-radius:6px; border:1px solid #ccc; font-size:16px;">
+                
+                <button onclick="agregarAlista()" 
+                        style="padding:10px 16px; background:#10b981; color:white; border:none; border-radius:6px; cursor:pointer; font-size:14px;">
+                    +
+                </button>
             </div>
         
-            <ul id="listaSecuencia" style="margin:15px 0; background:#f4f4f4; padding:10px; border-radius:5px; list-style:none;"></ul>
+            <ul id="listaSecuencia" style="margin:15px 0; background:#f9f9f9; padding:5px; border-radius:5px; list-style:none;"></ul>
         
-            <button onclick="guardarYEnviar()" style="width:100%; padding:10px; background:#8b5cf6; color:white; border:none; cursor:pointer;">
+            <button onclick="guardarYEnviar()" style="width:100%; padding:12px; background:#8b5cf6; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600;">
                 <i class="fas fa-save"></i> Enviar Secuencia
             </button>
         </div>
