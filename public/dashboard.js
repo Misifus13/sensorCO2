@@ -235,3 +235,44 @@ async function enviarComando() {
         alert("Error de conexión con el servidor");
     }
 }
+
+
+
+
+
+let listaRuta = [];
+
+function agregarComandoUI() {
+    const accion = prompt("Escribe: AVANZA, RETROCEDE o GIRA");
+    if (!accion) return;
+    
+    const valor = prompt("Escribe el valor (distancia o grados):");
+    if (!valor) return;
+
+    const comando = { cmd: accion.toUpperCase(), val: parseInt(valor) };
+    listaRuta.push(comando);
+
+    // Actualizar vista
+    const li = document.createElement("li");
+    li.style.padding = "5px";
+    li.style.borderBottom = "1px solid #eee";
+    li.textContent = `${comando.cmd}: ${comando.val}`;
+    document.getElementById("listaComandos").appendChild(li);
+}
+
+function enviarRutaMQTT() {
+    if (listaRuta.length === 0) return alert("Lista vacía");
+
+    const payload = { ruta: listaRuta };
+    
+    // Aquí usas tu cliente MQTT (o tu función de publicación)
+    // Supongamos que publicas en 'jhosimar/config'
+    console.log("Enviando JSON:", JSON.stringify(payload));
+    
+    // publish("jhosimar/config", JSON.stringify(payload));
+    
+    // Limpiar lista después de enviar
+    listaRuta = [];
+    document.getElementById("listaComandos").innerHTML = "";
+    alert("Ruta enviada correctamente");
+}
